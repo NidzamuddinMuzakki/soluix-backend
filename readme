@@ -6,3 +6,5 @@
 -- create user hanya berhasil jika username tidak ada
 -- create produk hanya bisa di lakukan user dengan role admin
 -- create ataupun update produk berhasil jika tidak ada nama dan kategori yang sama
+
+![](schema.png)
