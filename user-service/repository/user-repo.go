@@ -108,8 +108,8 @@ func (repository *UserRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx, w
 		err := row.Scan(&data.RowId, &data.Username, &data.Role, &data.CreatedBy, &data.CreatedTime, &data.UpdatedBy, &data.UpdatedTime)
 
 		helper.PanicIfError(err)
-		data.CreatedTime = helper.ConvertDateTime(data.CreatedTime)
-		data.UpdatedTime = helper.ConvertDateTime(data.UpdatedTime)
+		// data.CreatedTime = helper.ConvertDateTime(data.CreatedTime)
+		// data.UpdatedTime = helper.ConvertDateTime(data.UpdatedTime)
 
 		datas = append(datas, data)
 	}
