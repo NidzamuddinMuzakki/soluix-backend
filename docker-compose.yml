@@ -4,11 +4,25 @@ services:
         build: api-gateway
         environment: 
             USER_SERVICE_HOST: 'user-service:9001'
+            PRODUK_SERVICE_HOST: 'produk-service:9002'
         ports:        
           - "9000:9000"
         depends_on:
-          - user
+          - user-service
+          - produk-service
         restart: always
+  produk-service:
+      build: produk-service
+      environment: 
+          MYSQL_HOST: 'mysql:3306'
+          MYSQL_DATABASE: 'nidzam-ecomerce'
+          MYSQL_USER: 'root'
+          MYSQL_PASSWORD: 'password'
+      # ports:        
+      #   - "9000:9000"
+      depends_on:
+        - mysql
+      restart: always
   user-service:
       build: user-service
       environment: 

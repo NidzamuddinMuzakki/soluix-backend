@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func InitRouter(UserController controller.UserController) *echo.Echo {
+func InitRouter(UserController controller.UserController, ProdukController controller.ProdukController) *echo.Echo {
 
 	r := echo.New()
 	r.Use(middleware.CORS())
@@ -21,6 +21,43 @@ func InitRouter(UserController controller.UserController) *echo.Echo {
 		})
 		USER.GET("", func(c echo.Context) error {
 			UserController.FindAll(c)
+			return nil
+		})
+		USER.GET("/detail", func(c echo.Context) error {
+			UserController.FindByUsername(c)
+			return nil
+		})
+		USER.POST("/detail", func(c echo.Context) error {
+			UserController.Update(c)
+			return nil
+		})
+		USER.POST("/register", func(c echo.Context) error {
+			UserController.Register(c)
+			return nil
+		})
+
+	}
+	PRODUK := r.Group("produk")
+	{
+
+		PRODUK.GET("", func(c echo.Context) error {
+			ProdukController.FindAll(c)
+			return nil
+		})
+		PRODUK.GET("/detail", func(c echo.Context) error {
+			ProdukController.FindById(c)
+			return nil
+		})
+		PRODUK.POST("/insert", func(c echo.Context) error {
+			ProdukController.Insert(c)
+			return nil
+		})
+		PRODUK.POST("/update", func(c echo.Context) error {
+			ProdukController.Update(c)
+			return nil
+		})
+		PRODUK.DELETE("/delete", func(c echo.Context) error {
+			ProdukController.Delete(c)
 			return nil
 		})
 

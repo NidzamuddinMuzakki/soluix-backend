@@ -32,9 +32,6 @@ type ReqList struct {
 	Header  string `query:"header"`
 }
 
-type ReqListByUsername struct {
-	Username string `query:"username"`
-}
 type ReqListById struct {
 	Id int `query:"id"`
 }
@@ -44,20 +41,4 @@ type ReqListPilihan struct {
 	Type      string `query:"type"`
 	Condition string `query:"condition"`
 	Header    string `query:"header"`
-}
-
-type UpdateUserEntity struct {
-	Password string `json:"password"`
-}
-
-type CreateProdukEntity struct {
-	RowId    int    `json:"id"`
-	Nama     string `json:"nama"`
-	Kategori string `json:"kategori"`
-	Stok     int    `json:"stok"`
-}
-
-type RegisterUser struct {
-	Password string `json:"password"`
-	Username string `json:"username"`
 }

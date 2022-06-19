@@ -37,6 +37,7 @@ type EmptyObj struct{}
 
 func ReadFromRequestBody(ctx echo.Context, result interface{}) {
 	err := ctx.Bind(&result)
+	fmt.Println(err)
 	PanicIfError(err)
 }
 

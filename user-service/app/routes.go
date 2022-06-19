@@ -19,7 +19,7 @@ func InitRouter(UserController controller.UserController) *echo.Echo {
 			UserController.FindAll(c)
 			return nil
 		})
-		USER.GET("/byUsername", func(c echo.Context) error {
+		USER.GET("/detail", func(c echo.Context) error {
 			UserController.FindByUsername(c)
 			return nil
 		})
@@ -31,7 +31,7 @@ func InitRouter(UserController controller.UserController) *echo.Echo {
 			UserController.Update(c)
 			return nil
 		})
-		USER.PUT("/register", func(c echo.Context) error {
+		USER.POST("/register", func(c echo.Context) error {
 			UserController.Register(c)
 			return nil
 		})

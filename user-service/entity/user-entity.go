@@ -10,3 +10,9 @@ type UserEntity struct {
 	UpdatedBy   string `json:"updated_by"`
 	UpdatedTime string `json:"updated_time"`
 }
+
+type UpdateUserEntity struct {
+	Password string `json:"password"`
+	Username string `json:"username"`
+	Role     string `json:"role"`
+}

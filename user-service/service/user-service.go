@@ -15,7 +15,7 @@ type UserService interface {
 	VerifyCredential(ctx context.Context, username string, password string) (interface{}, string)
 	Insert(ctx context.Context, user entity.UserEntity, username string, role string) string
 	Register(ctx context.Context, user entity.UserEntity) string
-	Update(ctx context.Context, user entity.UserEntity, username string, role string) string
+	Update(ctx context.Context, user entity.UserEntity) string
 	Delete(ctx context.Context, username string, role string) string
 	FindByUsername(ctx context.Context, username string) interface{}
 	FindAll(ctx context.Context, page int, perpage int, filter string, order string) []entity.UserEntity
@@ -80,58 +80,30 @@ func (service *UserServiceImpl) Register(ctx context.Context, user entity.UserEn
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 	user.Role = "user"
-	insertData := service.UserRepository.Insert(ctx, tx, user, user.Username)
-	if insertData == "gagal" {
-		getDetail := service.UserRepository.FindAll(ctx, tx, fmt.Sprintf("username='%s'", user.Username))
-		if len(getDetail) > 0 {
-			var objectMessage []exception.BadRequestError
-			var message exception.BadRequestError
-			message.Desc = "username sudah ada"
-			message.DescGlob = "username sudah ada"
-			message.FieldName = "username"
-			objectMessage = append(objectMessage, message)
-			panic(exception.NewBadRequestError(objectMessage))
+	getDetail := service.UserRepository.FindAll(ctx, tx, fmt.Sprintf("username='%s' FOR UPDATE", user.Username))
+	fmt.Println("hay")
+	if len(getDetail) > 0 {
+		var objectMessage []exception.BadRequestError
+		var message exception.BadRequestError
+		message.Desc = "username sudah ada"
+		message.DescGlob = "username sudah ada"
+		message.FieldName = "username"
+		objectMessage = append(objectMessage, message)
+		panic(exception.NewBadRequestError(objectMessage))
 
-		}
 	}
+	insertData := service.UserRepository.Insert(ctx, tx, user, user.Username)
+
 	return insertData
 
 }
-func (service *UserServiceImpl) Update(ctx context.Context, user entity.UserEntity, username string, role string) string {
+func (service *UserServiceImpl) Update(ctx context.Context, user entity.UserEntity) string {
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
-	if role != "admin" {
-		var objectMessage []exception.BadRequestError
-		var message exception.BadRequestError
-		message.Desc = "role anda bukan admin"
-		message.DescGlob = "role anda bukan admin"
-		message.FieldName = "role"
-		objectMessage = append(objectMessage, message)
-		panic(exception.NewBadRequestError(objectMessage))
-	}
-	cekAda := service.UserRepository.FindAll(ctx, tx, fmt.Sprintf(" rowId=%d", user.RowId))
-	var objectMessage []exception.BadRequestError
-	var message exception.BadRequestError
-	if len(cekAda) == 0 {
-		message.Desc = "data tidak ada"
-		message.DescGlob = "data tidak ada"
-		message.FieldName = "rowId"
-		objectMessage = append(objectMessage, message)
-		panic(exception.NewBadRequestError(objectMessage))
-	}
-	updateData := service.UserRepository.Update(ctx, tx, user, username)
-	if updateData == "gagal" {
-		getDetail := service.UserRepository.FindAll(ctx, tx, fmt.Sprintf("username='%s' and rowId!=%d", user.Username, user.RowId))
-		if len(getDetail) > 0 {
-			message.Desc = "username sudah ada"
-			message.DescGlob = "username sudah ada"
-			message.FieldName = "username"
-			objectMessage = append(objectMessage, message)
-			panic(exception.NewBadRequestError(objectMessage))
+	fmt.Println(user.Username, user.Password, user.Role, "hayasasasa")
+	updateData := service.UserRepository.Update(ctx, tx, user)
 
-		}
-	}
 	return updateData
 }
 func (service *UserServiceImpl) Delete(ctx context.Context, username string, role string) string {
@@ -160,6 +132,7 @@ func (service *UserServiceImpl) FindByUsername(ctx context.Context, username str
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
+	fmt.Println(username)
 	getData := service.UserRepository.FindByUsername(ctx, tx, username)
 	if len(getData) > 0 {
 		return getData[0]

@@ -89,12 +89,12 @@ func (controller *UserControllerImpl) FindAll(ctx echo.Context) {
 }
 
 func (controller *UserControllerImpl) FindByUsername(ctx echo.Context) {
-	authHeader := ctx.Request().Header["Authorization"][0]
-	auth := helper.ReadDataToken(authHeader)
-	fmt.Println(auth)
+	// authHeader := ctx.Request().Header["Authorization"][0]
+	// auth := helper.ReadDataToken(authHeader)
+	// fmt.Println(auth)
 	getall := entity.ReqListByUsername{}
 	err := ctx.Bind(&getall)
-
+	fmt.Println(err, getall.Username)
 	helper.PanicIfError(err)
 
 	resultData := controller.UserService.FindByUsername(ctx.Request().Context(), getall.Username)
@@ -138,17 +138,18 @@ func (controller *UserControllerImpl) Register(ctx echo.Context) {
 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
 }
 func (controller *UserControllerImpl) Update(ctx echo.Context) {
-	authHeader := ctx.Request().Header["Authorization"][0]
-	auth := helper.ReadDataToken(authHeader)
 
 	CreateRequest := entity.UserEntity{}
 
 	helper.ReadFromRequestBody(ctx, &CreateRequest)
-	resultData := controller.UserService.Update(ctx.Request().Context(), CreateRequest, auth.Username, auth.Role)
+	fmt.Println(CreateRequest, "hayayaasdasas")
+	resultData := controller.UserService.Update(ctx.Request().Context(), CreateRequest)
+
 	webResponse := entity.WebResponse{
 		Code:   200,
 		Status: "OK",
-		Data:   resultData,
+		// Data:   resultData,
+		Data: resultData,
 	}
 
 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)

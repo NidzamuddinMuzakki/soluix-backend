@@ -35,7 +35,8 @@ CREATE TABLE `users` (
   `created_by` varchar(255) NOT NULL,
   `created_time` datetime NOT NULL,
   `updated_by` varchar(255) NOT NULL,
-  `updated_time` datetime NOT NULL
+  `updated_time` datetime DEFAULT NULL
+ 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

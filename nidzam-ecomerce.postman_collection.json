@@ -7,214 +7,349 @@
 	},
 	"item": [
 		{
-			"name": "user/login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:9000/user/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9000",
-					"path": [
-						"user",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "insert",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjUyOTcwNTkzLCJpYXQiOjE2NTI5Njk2OTMsImlzcyI6InlkaG53YiJ9.ddIhdtD7tphX0Idz1j2_fNfCakSRZTjgrM7KYgnF1Fs",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"nidzam\",\r\n    \"password\":\"p@ssw0rd\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://8.215.43.118:3006/user/detail",
-					"protocol": "http",
-					"host": [
-						"8",
-						"215",
-						"43",
-						"118"
-					],
-					"port": "3006",
-					"path": [
-						"user",
-						"detail"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "update",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjUyOTcxNjQ2LCJpYXQiOjE2NTI5NzA3NDYsImlzcyI6InlkaG53YiJ9.PN63_zfDR001kKCdVPJShuPRjCNHuSZvY241DOdD5WU",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"rowId\":4,\r\n    \"username\":\"nidzam1\",\r\n    \"password\":\"p@ssw0rd\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://8.215.43.118:3006/user/detail",
-					"protocol": "http",
-					"host": [
-						"8",
-						"215",
-						"43",
-						"118"
-					],
-					"port": "3006",
-					"path": [
-						"user",
-						"detail"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "delete",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjUyOTcxNjQ2LCJpYXQiOjE2NTI5NzA3NDYsImlzcyI6InlkaG53YiJ9.PN63_zfDR001kKCdVPJShuPRjCNHuSZvY241DOdD5WU",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://8.215.43.118:3006/user/detail?username=nidzam1",
-					"protocol": "http",
-					"host": [
-						"8",
-						"215",
-						"43",
-						"118"
-					],
-					"port": "3006",
-					"path": [
-						"user",
-						"detail"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "nidzam1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "AllData",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1NjQ0MTUyLCJpYXQiOjE2NTU2NDMyNTIsImlzcyI6InlkaG53YiJ9.j3bYF6X_l9Y6_oJ_NvRWIqK56bJHdJ0WqUrBTVt8oP",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:9000/user?page=1&perpage=10",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9000",
-					"path": [
-						"user"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "1"
+			"name": "user-service",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"p@ssw0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
-						{
-							"key": "perpage",
-							"value": "10"
+						"url": {
+							"raw": "http://localhost:9000/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"user",
+								"login"
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1NjY2NjkxLCJpYXQiOjE2NTU2NjU3OTEsImlzcyI6InlkaG53YiJ9.xFJSDecbd6A9-IFC4lEQwvbhyZZUjARgikW8PS0pNNc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"p@ssw0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/user/detail",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"user",
+								"detail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllData",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1NjY2NjkxLCJpYXQiOjE2NTU2NjU3OTEsImlzcyI6InlkaG53YiJ9.xFJSDecbd6A9-IFC4lEQwvbhyZZUjARgikW8PS0pNNc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9000/user?page=1&perpage=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "perpage",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1NjY2NjkxLCJpYXQiOjE2NTU2NjU3OTEsImlzcyI6InlkaG53YiJ9.xFJSDecbd6A9-IFC4lEQwvbhyZZUjARgikW8PS0pNNc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"budi\",\r\n    \"password\":\"p@ssw0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/user/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllDataByUsername",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1NjY2NjkxLCJpYXQiOjE2NTU2NjU3OTEsImlzcyI6InlkaG53YiJ9.xFJSDecbd6A9-IFC4lEQwvbhyZZUjARgikW8PS0pNNc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9000/user/detail?username=nidzam",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"user",
+								"detail"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "nidzam"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "AllDataByUsername",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjUyOTcxNjQ2LCJpYXQiOjE2NTI5NzA3NDYsImlzcyI6InlkaG53YiJ9.PN63_zfDR001kKCdVPJShuPRjCNHuSZvY241DOdD5WU",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://8.215.43.118:3006/user/byUsername?username=nidzam",
-					"protocol": "http",
-					"host": [
-						"8",
-						"215",
-						"43",
-						"118"
-					],
-					"port": "3006",
-					"path": [
-						"user",
-						"byUsername"
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "nidzam"
+			"name": "produk-service",
+			"item": [
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1Njc0NzM3LCJpYXQiOjE2NTU2NzM4MzcsImlzcyI6InlkaG53YiJ9.ykEarwCmuqzjc23JP-sZPaLUyqE2Uof0uSFtQSOATgU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9000/produk/delete?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"produk",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "insert",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1Njc0NzM3LCJpYXQiOjE2NTU2NzM4MzcsImlzcyI6InlkaG53YiJ9.ykEarwCmuqzjc23JP-sZPaLUyqE2Uof0uSFtQSOATgU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nama\":\"baju muslim\",\r\n    \"kategori\":\"baju\",\r\n    \"stok\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/produk/insert",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"produk",
+								"insert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1Njc0NzM3LCJpYXQiOjE2NTU2NzM4MzcsImlzcyI6InlkaG53YiJ9.ykEarwCmuqzjc23JP-sZPaLUyqE2Uof0uSFtQSOATgU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1,\r\n    \"nama\":\"baju muslims\",\r\n    \"kategori\":\"baju\",\r\n    \"stok\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/produk/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"produk",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllData",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1Njc0NzM3LCJpYXQiOjE2NTU2NzM4MzcsImlzcyI6InlkaG53YiJ9.ykEarwCmuqzjc23JP-sZPaLUyqE2Uof0uSFtQSOATgU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9000/produk?page=1&perpage=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"produk"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "perpage",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DataById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjU1Njc0NzM3LCJpYXQiOjE2NTU2NzM4MzcsImlzcyI6InlkaG53YiJ9.ykEarwCmuqzjc23JP-sZPaLUyqE2Uof0uSFtQSOATgU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9000/produk/detail?id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"produk",
+								"detail"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

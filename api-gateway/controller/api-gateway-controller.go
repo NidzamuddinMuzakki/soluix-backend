@@ -44,6 +44,9 @@ type ResponseLoginBodyCode struct {
 type UserController interface {
 	Login(ctx echo.Context)
 	FindAll(ctx echo.Context)
+	FindByUsername(ctx echo.Context)
+	Update(ctx echo.Context)
+	Register(ctx echo.Context)
 }
 type UserControllerImpl struct {
 	JwtService service.JWTService
@@ -69,6 +72,8 @@ func (service *UserControllerImpl) Login(ctx echo.Context) {
 			Status: "Unauthorized",
 		}
 		helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
+		return
+
 	}
 
 	dec := json.NewDecoder(res.Body)
@@ -81,6 +86,7 @@ func (service *UserControllerImpl) Login(ctx echo.Context) {
 			Status: "Unauthorized",
 		}
 		helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
+		return
 	}
 	if p.Data.Username != "" {
 		fmt.Println(loginDTO.Username, p.Data.Role)
@@ -138,4 +144,86 @@ func (controller *UserControllerImpl) FindAll(ctx echo.Context) {
 	// }
 
 	helper.WriteToResponseBody(ctx, p, p.Code)
+}
+
+func (controller *UserControllerImpl) FindByUsername(ctx echo.Context) {
+	// authHeader := ctx.Request().Header["Authorization"][0]
+	// auth := helper.ReadDataToken(authHeader)
+	getall := entity.ReqListByUsername{}
+	err := ctx.Bind(&getall)
+	fmt.Println(err, getall, "NIDDDDD")
+	helper.PanicIfError(err)
+	baseURL := fmt.Sprintf("http://%s", os.Getenv("USER_SERVICE_HOST"))
+	// dataRequest := fmt.Sprintf(`{"username":"%s","role":"%s"}`, auth.Username, auth.Role)
+	// requestBody := strings.NewReader(dataRequest)
+	url := baseURL + fmt.Sprintf("/user/detail?username=%s", getall.Username)
+	fmt.Println(url, "cek url")
+	res, err := http.Get(url)
+
+	fmt.Println(err, res, "nidzazazaza")
+	dec := json.NewDecoder(res.Body)
+	var p entity.WebResponseListAndDetail
+	// fmt.Println(dec, res, res.Body, p, "nidzam")
+	err = dec.Decode(&p)
+	fmt.Println(err, p, "NIDZZZ")
+
+	// fmt.Println(beli)
+	// webResponse := entity.WebResponseListAndDetail{
+	// 	Code: 200,
+	// 	Data: resultData,
+	// 	Info: "",
+	// }
+
+	helper.WriteToResponseBody(ctx, p, p.Code)
+}
+
+func (service *UserControllerImpl) Update(ctx echo.Context) {
+	authHeader := ctx.Request().Header["Authorization"][0]
+	auth := helper.ReadDataToken(authHeader)
+	gantiPassword := entity.UpdateUserEntity{}
+	helper.ReadFromRequestBody(ctx, &gantiPassword)
+	baseURL := fmt.Sprintf("http://%s", os.Getenv("USER_SERVICE_HOST"))
+	dataRequest := fmt.Sprintf(`{"password":"%s","username":"%s","role":"%s"}`, gantiPassword.Password, auth.Username, auth.Role)
+	requestBody := strings.NewReader(dataRequest)
+	res, err := http.Post(baseURL+"/user/detail", "application/json", requestBody)
+	fmt.Println(res)
+	if err != nil {
+		helper.WriteToResponseBody(ctx, err, res.StatusCode)
+	}
+
+	dec := json.NewDecoder(res.Body)
+	var p entity.WebResponse
+	fmt.Println(dec, res, res.Body, p, "nidzam")
+	err = dec.Decode(&p)
+	if err != nil {
+
+		helper.WriteToResponseBody(ctx, err, res.StatusCode)
+	}
+	helper.WriteToResponseBody(ctx, p, p.Code)
+
+}
+
+func (service *UserControllerImpl) Register(ctx echo.Context) {
+
+	register := entity.RegisterUser{}
+	helper.ReadFromRequestBody(ctx, &register)
+	baseURL := fmt.Sprintf("http://%s", os.Getenv("USER_SERVICE_HOST"))
+	dataRequest := fmt.Sprintf(`{"password":"%s","username":"%s"}`, register.Password, register.Username)
+	requestBody := strings.NewReader(dataRequest)
+	res, err := http.Post(baseURL+"/user/register", "application/json", requestBody)
+	fmt.Println(res)
+	if err != nil {
+		helper.WriteToResponseBody(ctx, err, res.StatusCode)
+	}
+
+	dec := json.NewDecoder(res.Body)
+	var p entity.WebResponse
+	fmt.Println(dec, res, res.Body, p, "nidzam")
+	err = dec.Decode(&p)
+	if err != nil {
+
+		helper.WriteToResponseBody(ctx, err, res.StatusCode)
+	}
+	helper.WriteToResponseBody(ctx, p, p.Code)
+
 }

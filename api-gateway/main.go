@@ -9,13 +9,14 @@ import (
 )
 
 var (
-	userJWTService service.JWTService        = service.NewJWTService()
-	UserController controller.UserController = controller.NewUserController(userJWTService)
+	userJWTService   service.JWTService          = service.NewJWTService()
+	UserController   controller.UserController   = controller.NewUserController(userJWTService)
+	ProdukController controller.ProdukController = controller.NewProdukController()
 )
 
 func main() {
 	fmt.Println("nidzam")
 
-	r := app.InitRouter(UserController)
+	r := app.InitRouter(UserController, ProdukController)
 	r.Start(":9000")
 }
