@@ -70,8 +70,7 @@ func (service *UserControllerImpl) Login(ctx echo.Context) {
 }
 
 func (controller *UserControllerImpl) FindAll(ctx echo.Context) {
-	authHeader := ctx.Request().Header["Authorization"][0]
-	fmt.Println(authHeader)
+
 	getall := entity.ReqList{}
 	err := ctx.Bind(&getall)
 

@@ -181,7 +181,7 @@ func (service *UserServiceImpl) FindAll(ctx context.Context, page int, perpage i
 	if page > 0 {
 		page = page - 1
 	}
-	where := fmt.Sprintf("%s order by %s LIMTI %d,%d", filter, order, page, perpage)
+	where := fmt.Sprintf("%s order by %s LIMIT %d,%d", filter, order, page, perpage)
 	getData := service.UserRepository.FindAll(ctx, tx, where)
 	return getData
 }

@@ -110,14 +110,18 @@ func (service *UserControllerImpl) Login(ctx echo.Context) {
 }
 
 func (controller *UserControllerImpl) FindAll(ctx echo.Context) {
-	authHeader := ctx.Request().Header["Authorization"][0]
+	// authHeader := ctx.Request().Header["Authorization"][0]
+	// auth := helper.ReadDataToken(authHeader)
 	getall := entity.ReqList{}
 	err := ctx.Bind(&getall)
 	fmt.Println(err, getall, "NIDDDDD")
 	helper.PanicIfError(err)
 	baseURL := fmt.Sprintf("http://%s", os.Getenv("USER_SERVICE_HOST"))
-	res, err := http.Get(baseURL + fmt.Sprintf("/user?page=%d&perpage=%d&filter=%s&order=%s", getall.Page, getall.Perpage, getall.Filter, getall.Order))
-	res.Header.Add("Authorization", authHeader)
+	// dataRequest := fmt.Sprintf(`{"username":"%s","role":"%s"}`, auth.Username, auth.Role)
+	// requestBody := strings.NewReader(dataRequest)
+	url := baseURL + fmt.Sprintf("/user?page=%d&perpage=%d&filter=%s&order=%s", getall.Page, getall.Perpage, getall.Filter, getall.Order)
+	fmt.Println(url, "cek url")
+	res, err := http.Get(url)
 
 	fmt.Println(err, res, "nidzazazaza")
 	dec := json.NewDecoder(res.Body)
