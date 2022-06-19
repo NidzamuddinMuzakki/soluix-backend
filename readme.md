@@ -1,3 +1,4 @@
+![](schema.png)
 - run=docker compose up --build
 - microservice terdiri dari api-gateway produk-service user-service mysql
 - route yang di expose hanya terdapat di api-gateway, database tidak bisa di akses dari luar
@@ -7,4 +8,3 @@
 - create produk hanya bisa di lakukan user dengan role admin
 - create ataupun update produk berhasil jika tidak ada nama dan kategori yang sama
 
-![](schema.png)
