@@ -40,8 +40,8 @@ services:
     environment:
       MYSQL_DATABASE: 'nidzam-ecomerce'
       # So you don't have to use root, but you can if you like
-      MYSQL_USER: 'mysql'
       MYSQL_HOST: 'localhost:3306'
+      MYSQL_USER: 'mysql'
       # You can use whatever password you like
       MYSQL_PASSWORD: 'password'
       # Password for root access
@@ -52,6 +52,6 @@ services:
       - "3306:3306"
     restart: always
     volumes:
-      - db_data:/var/lib/mysql
+      - ./nidzam-ecomerce.sql:/var/lib/mysql/.nidzam-ecomerce.sql
 volumes:
-  db_data:
+  nidzam-ecomerce.sql:
