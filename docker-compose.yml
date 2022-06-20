@@ -52,6 +52,7 @@ services:
       - "3306:3306"
     restart: always
     volumes:
-      - ./nidzam-ecomerce.sql:/var/lib/mysql/.nidzam-ecomerce.sql
+      - ./nidzam-ecomerce.sql:/docker-entrypoint-initdb.d/nidzam-ecomerce.sql
+      - db_data:/var/lib/mysql
 volumes:
-  nidzam-ecomerce.sql:
+  db_data:
