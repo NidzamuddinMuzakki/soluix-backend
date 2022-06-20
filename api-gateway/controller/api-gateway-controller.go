@@ -47,6 +47,8 @@ type UserController interface {
 	FindByUsername(ctx echo.Context)
 	Update(ctx echo.Context)
 	Register(ctx echo.Context)
+
+	
 }
 type UserControllerImpl struct {
 	JwtService service.JWTService
