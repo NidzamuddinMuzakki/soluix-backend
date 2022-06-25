@@ -11,7 +11,7 @@ import (
 )
 
 type UserRepository interface {
-	Insert(ctx context.Context, tx *sql.Tx, user entity.ProdukEntity) string
+	Insert(ctx context.Context, tx *sql.Tx, user entity.ProdukEntity) (string, int)
 	Update(ctx context.Context, tx *sql.Tx, user entity.ProdukEntity) string
 	Delete(ctx context.Context, tx *sql.Tx, rowId int) string
 	FindById(ctx context.Context, tx *sql.Tx, username int) []entity.ProdukEntity
@@ -25,7 +25,7 @@ func NewUserRepository() UserRepository {
 	return &UserRepositoryImpl{}
 }
 
-func (repository *UserRepositoryImpl) Insert(ctx context.Context, tx *sql.Tx, user entity.ProdukEntity) string {
+func (repository *UserRepositoryImpl) Insert(ctx context.Context, tx *sql.Tx, user entity.ProdukEntity) (string, int) {
 	cuyNow := helper.TimePlus7(time.Now())
 	user.CreatedTime = cuyNow
 	user.CreatedBy = user.Username
@@ -37,14 +37,16 @@ func (repository *UserRepositoryImpl) Insert(ctx context.Context, tx *sql.Tx, us
 	helper.PanicIfError(err)
 	rows, errs := row.RowsAffected()
 	fmt.Println(errs, rows)
+	ids, errss := row.LastInsertId()
+	helper.PanicIfError(errss)
 	if rows < 1 {
 		helper.PanicIfError(errs)
 	}
 	fmt.Println(rows)
 	if rows > 0 {
-		return "berhasil"
+		return "berhasil", int(ids)
 	} else {
-		return "gagal"
+		return "gagal", 0
 	}
 
 }

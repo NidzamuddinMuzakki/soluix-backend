@@ -1,18 +1,26 @@
 package app
 
 import (
+	"fmt"
+
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/user-service/controller"
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/user-service/middlewares"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
+func Nidzam(nid interface{}) error {
+	fmt.Println(nid)
+
+	return nil
+}
 func InitRouter(UserController controller.UserController) *echo.Echo {
 
 	r := echo.New()
 	r.Use(middleware.CORS())
 	// r.Use(middlewares.Auth)
 	r.Use(middlewares.Recover)
+
 	USER := r.Group("user")
 	{
 		USER.GET("", func(c echo.Context) error {

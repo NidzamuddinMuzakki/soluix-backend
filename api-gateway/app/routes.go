@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func InitRouter(UserController controller.UserController, ProdukController controller.ProdukController) *echo.Echo {
+func InitRouter(UserController controller.UserController, ProdukController controller.ProdukController, OrderController controller.OrderController) *echo.Echo {
 
 	r := echo.New()
 	r.Use(middleware.CORS())
@@ -61,6 +61,13 @@ func InitRouter(UserController controller.UserController, ProdukController contr
 			return nil
 		})
 
+	}
+	ORDER := r.Group("order")
+	{
+		ORDER.GET("", func(c echo.Context) error {
+			OrderController.GetData(c)
+			return nil
+		})
 	}
 	return r
 }

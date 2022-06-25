@@ -12,8 +12,8 @@ import (
 )
 
 type UserService interface {
-	Insert(ctx context.Context, user entity.ProdukEntity) string
-	Update(ctx context.Context, user entity.ProdukEntity) string
+	Insert(ctx context.Context, user entity.ProdukEntity) (string, entity.ProdukEntity)
+	Update(ctx context.Context, user entity.ProdukEntity) (string, entity.ProdukEntity)
 	Delete(ctx context.Context, rowId int) string
 	FindById(ctx context.Context, username int) interface{}
 	FindAll(ctx context.Context, page int, perpage int, filter string, order string) []entity.ProdukEntity
@@ -31,7 +31,7 @@ func NewUserService(userRepo repository.UserRepository, DB *sql.DB) UserService 
 	}
 }
 
-func (service *UserServiceImpl) Insert(ctx context.Context, user entity.ProdukEntity) string {
+func (service *UserServiceImpl) Insert(ctx context.Context, user entity.ProdukEntity) (string, entity.ProdukEntity) {
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
@@ -48,13 +48,13 @@ func (service *UserServiceImpl) Insert(ctx context.Context, user entity.ProdukEn
 		panic(exception.NewBadRequestError(objectMessage))
 
 	}
-	insertData := service.UserRepository.Insert(ctx, tx, user)
-
-	return insertData
+	insertData, ints := service.UserRepository.Insert(ctx, tx, user)
+	user.RowId = ints
+	return insertData, user
 
 }
 
-func (service *UserServiceImpl) Update(ctx context.Context, user entity.ProdukEntity) string {
+func (service *UserServiceImpl) Update(ctx context.Context, user entity.ProdukEntity) (string, entity.ProdukEntity) {
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
@@ -73,7 +73,7 @@ func (service *UserServiceImpl) Update(ctx context.Context, user entity.ProdukEn
 	}
 	updateData := service.UserRepository.Update(ctx, tx, user)
 
-	return updateData
+	return updateData, user
 }
 func (service *UserServiceImpl) Delete(ctx context.Context, rowId int) string {
 	tx, err := service.DB.Begin()

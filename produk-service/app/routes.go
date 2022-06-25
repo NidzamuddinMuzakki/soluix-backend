@@ -11,6 +11,7 @@ func InitRouter(ProdukController controller.UserController) *echo.Echo {
 
 	r := echo.New()
 	r.Use(middleware.CORS())
+
 	// r.Use(middlewares.Auth)
 	r.Use(middlewares.Recover)
 	PRODUK := r.Group("produk")

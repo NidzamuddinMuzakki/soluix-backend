@@ -12,11 +12,12 @@ var (
 	userJWTService   service.JWTService          = service.NewJWTService()
 	UserController   controller.UserController   = controller.NewUserController(userJWTService)
 	ProdukController controller.ProdukController = controller.NewProdukController()
+	OrderController  controller.OrderController  = controller.NewOrderController()
 )
 
 func main() {
 	fmt.Println("nidzam")
 
-	r := app.InitRouter(UserController, ProdukController)
+	r := app.InitRouter(UserController, ProdukController, OrderController)
 	r.Start(":9000")
 }

@@ -5,11 +5,13 @@ services:
         environment: 
             USER_SERVICE_HOST: 'user-service:9001'
             PRODUK_SERVICE_HOST: 'produk-service:9002'
+            PRODUK_SERVICE_QUERY_HOST: 'produk-service-query:9003'
         ports:        
           - "9000:9000"
         depends_on:
           - user-service
           - produk-service
+          - produk-service-query
         restart: always
   produk-service:
       build: produk-service
@@ -18,10 +20,23 @@ services:
           MYSQL_DATABASE: 'nidzam-ecomerce'
           MYSQL_USER: 'root'
           MYSQL_PASSWORD: 'password'
-      # ports:        
-      #   - "9000:9000"
+          RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
+      ports:        
+        - "9002:9002"
       depends_on:
         - mysql
+        - rabbitmq
+      restart: always
+  produk-service-query:
+      build: produk-service-query
+      environment: 
+          RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
+      ports:        
+        - "9003:9003"
+      depends_on:
+        - rabbitmq
+        - produk-service
+        - elasticsearch
       restart: always
   user-service:
       build: user-service
@@ -30,27 +45,59 @@ services:
           MYSQL_DATABASE: 'nidzam-ecomerce'
           MYSQL_USER: 'root'
           MYSQL_PASSWORD: 'password'
-      # ports:        
-      #   - "9000:9000"
+      ports:        
+        - "9001:9001"
       depends_on:
         - mysql
       restart: always
   mysql:
     image: mysql:5.7
+    container_name: 'mysql_nidzam_ecomerce'
     environment:
       MYSQL_DATABASE: 'nidzam-ecomerce'
-      # So you don't have to use root, but you can if you like
       MYSQL_HOST: 'localhost:3306'
       MYSQL_USER: 'mysql'
-      # You can use whatever password you like
       MYSQL_PASSWORD: 'password'
-      # Password for root access
       MYSQL_ROOT_PASSWORD: 'password'
     expose:
       - "3306"
     ports:
       - "3306:3306"
     restart: always
-    volumes:
+    volumes:     
       - ./db/nidzam-ecomerce.sql:/docker-entrypoint-initdb.d/init.sql
-     
+  rabbitmq:
+    image: rabbitmq:3.8.14-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.4.0
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200   
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch            

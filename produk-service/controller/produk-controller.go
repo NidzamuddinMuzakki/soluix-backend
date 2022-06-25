@@ -1,11 +1,15 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service/entity"
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service/helper"
+
+	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service/rabbitmq"
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service/service"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -28,12 +32,18 @@ type LoginResponse struct {
 
 type UserControllerImpl struct {
 	UserService service.UserService
+	Rc          rabbitmq.RabbitClient
 }
 
-func NewUserController(userService service.UserService) UserController {
+func NewUserController(userService service.UserService, rc rabbitmq.RabbitClient) UserController {
 	return &UserControllerImpl{
 		UserService: userService,
+		Rc:          rc,
 	}
+}
+
+type funcName struct {
+	Nama string `json:"nama"`
 }
 
 func (controller *UserControllerImpl) FindAll(ctx echo.Context) {
@@ -82,12 +92,14 @@ func (controller *UserControllerImpl) Insert(ctx echo.Context) {
 	fmt.Println(err)
 	helper.PanicIfError(err)
 	fmt.Println(CreateRequest, "nidzam")
-	resultData := controller.UserService.Insert(ctx.Request().Context(), CreateRequest)
+	resultData, dataFromInsert := controller.UserService.Insert(ctx.Request().Context(), CreateRequest)
 	webResponse := entity.WebResponse{
 		Code:   200,
 		Status: "OK",
 		Data:   resultData,
 	}
+	newFsConfigBytes, _ := json.Marshal(dataFromInsert)
+	go controller.Rc.Publish("insert-queue", newFsConfigBytes)
 
 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
 }
@@ -108,8 +120,9 @@ func (controller *UserControllerImpl) Update(ctx echo.Context) {
 		helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
 		return
 	}
-	resultData := controller.UserService.Update(ctx.Request().Context(), CreateRequest)
-
+	resultData, dataFromUpdate := controller.UserService.Update(ctx.Request().Context(), CreateRequest)
+	newFsConfigBytes, _ := json.Marshal(dataFromUpdate)
+	go controller.Rc.Publish("update-queue", newFsConfigBytes)
 	webResponse := entity.WebResponse{
 		Code:   200,
 		Status: "OK",
@@ -147,6 +160,8 @@ func (controller *UserControllerImpl) Delete(ctx echo.Context) {
 		Status: "OK",
 		Data:   resultData,
 	}
+	newFsConfigBytes, _ := json.Marshal(getall)
+	go controller.Rc.Publish("delete-queue", newFsConfigBytes)
 
 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
 }
