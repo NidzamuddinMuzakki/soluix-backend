@@ -50,6 +50,7 @@ func (service *UserServiceImpl) Insert(ctx context.Context, user entity.ProdukEn
 	}
 	insertData, ints := service.UserRepository.Insert(ctx, tx, user)
 	user.RowId = ints
+	fmt.Println(ints, "cekkkkkkkkk")
 	return insertData, user
 
 }

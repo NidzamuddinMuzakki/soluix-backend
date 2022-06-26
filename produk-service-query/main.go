@@ -1,15 +1,18 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service-query/app"
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service-query/rabbitmq"
 
-	// "github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service-query/controller"
+	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service-query/controller"
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service-query/entity"
 	// "github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service-query/repository"
 	// "github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service-query/service"
@@ -20,7 +23,7 @@ var (
 	// db             *sql.DB                   = app.Init()
 	// UserRepository repository.UserRepository = repository.NewUserRepository()
 	// UserService    service.UserService       = service.NewUserService(UserRepository, db)
-	// UserController controller.UserController = controller.NewUserController(UserService, rc)
+	ProdukSearchController controller.ProdukSearchController = controller.NewProdukSearchController()
 )
 
 func main() {
@@ -29,8 +32,7 @@ func main() {
 	go rc.Consume("insert-queue", InsertConsume)
 	go rc.Consume("update-queue", UpdateConsume)
 	go rc.Consume("delete-queue", DeleteConsume)
-
-	r := app.InitRouter()
+	r := app.InitRouter(ProdukSearchController)
 	r.Start(":9003")
 }
 
@@ -38,20 +40,38 @@ type funcName struct {
 	Nama string `json:"nama"`
 }
 
+// func InsertElasticSearch(produk entity.ProdukEntity, es *elastics.PostStorage) error {
+// 	nor := time.Now()
+// 	doc := storages.Post{
+// 		ID:        strconv.Itoa(produk.RowId),
+// 		Nama:      produk.Nama,
+// 		Kategori:  produk.Kategori,
+// 		Stok:      produk.Stok,
+// 		CreatedAt: &nor,
+// 	}
+
+// 	errs := es.Insert(context.Background(), doc)
+// 	if errs != nil {
+// 		panic(errs)
+// 	}
+// 	return nil
+// }
 func InsertConsume(nid interface{}) error {
 	m := nid.(map[string]interface{})
+
 	var produk entity.ProdukEntity
-	if rowId, ok := m["id"].(int); ok {
-		produk.RowId = rowId
+	if rowId, ok := m["id"].(float64); ok {
+		produk.RowId = int(rowId)
 	}
+	fmt.Println(nid, "coba", m["id"], reflect.TypeOf(m["id"]), "hayy", produk.RowId)
 	if nama, ok := m["nama"].(string); ok {
 		produk.Nama = nama
 	}
 	if kategori, ok := m["kategori"].(string); ok {
 		produk.Kategori = kategori
 	}
-	if stok, ok := m["stok"].(int); ok {
-		produk.Stok = stok
+	if stok, ok := m["stok"].(float64); ok {
+		produk.Stok = int(stok)
 	}
 	if created_by, ok := m["created_by"].(string); ok {
 		produk.CreatedBy = created_by
@@ -65,25 +85,27 @@ func InsertConsume(nid interface{}) error {
 	if updated_time, ok := m["updated_time"].(string); ok {
 		produk.UpdatedTime = updated_time
 	}
-	baseURL := fmt.Sprintf("http://localhost:9000/produk-v1/_doc/%d", produk.RowId)
+
+	client := &http.Client{}
+	getbase := fmt.Sprintf("http://%s", os.Getenv("ELASTICSEARCH_URL"))
 	dataRequest := fmt.Sprintf(`{"id":%d,"nama":"%s","kategori":"%s","stok":%d}`, produk.RowId, produk.Nama, produk.Kategori, produk.Stok)
 	requestBody := strings.NewReader(dataRequest)
-	url := baseURL
-	fmt.Println(url, "cek url")
-	res, err := http.Post(url, "application/json", requestBody)
-
-	fmt.Println(err, res, "nidzazazaza")
-	dec := json.NewDecoder(res.Body)
-	var p entity.WebResponseListAndDetail
-	// fmt.Println(dec, res, res.Body, p, "nidzam")
-	err = dec.Decode(&p)
-	fmt.Println(produk)
-
+	req, err := http.NewRequest("PUT", getbase+"/produk-v1/_doc/"+strconv.Itoa(produk.RowId), requestBody)
+	if err != nil {
+		log.Println(err)
+	}
+	req.Header.Add("Content-Type", "application/json")
+	res, errs := client.Do(req)
+	if errs != nil {
+		log.Println(errs)
+	} else {
+		res.Body.Close()
+	}
 	return nil
 }
 
 func UpdateConsume(nid interface{}) error {
-	// fmt.Println(nid)
+	fmt.Println(nid)
 	m := nid.(map[string]interface{})
 	var produk entity.ProdukEntity
 	if rowId, ok := m["id"].(int); ok {
@@ -110,7 +132,7 @@ func UpdateConsume(nid interface{}) error {
 	if updated_time, ok := m["updated_time"].(string); ok {
 		produk.UpdatedTime = updated_time
 	}
-	fmt.Println(produk)
+
 	return nil
 }
 

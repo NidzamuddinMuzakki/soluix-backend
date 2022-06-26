@@ -60,7 +60,10 @@ func InitRouter(UserController controller.UserController, ProdukController contr
 			ProdukController.Delete(c)
 			return nil
 		})
-
+		PRODUK.GET("/search", func(c echo.Context) error {
+			ProdukController.FindSearch(c)
+			return nil
+		})
 	}
 	ORDER := r.Group("order")
 	{

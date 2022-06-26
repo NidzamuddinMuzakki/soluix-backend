@@ -14,6 +14,7 @@ import (
 
 type ProdukController interface {
 	Insert(ctx echo.Context)
+	FindSearch(ctx echo.Context)
 	FindById(ctx echo.Context)
 	FindAll(ctx echo.Context)
 	Update(ctx echo.Context)
@@ -57,6 +58,33 @@ func (controller *ProdukControllerImpl) FindAll(ctx echo.Context) {
 	helper.WriteToResponseBody(ctx, p, p.Code)
 }
 
+type Search struct {
+	Words string `query:"search"`
+}
+type Res struct {
+	Hits interface{} `json:"hits"`
+	Aggs interface{} `json:"aggregations"`
+}
+
+func (controller *ProdukControllerImpl) FindSearch(ctx echo.Context) {
+	getall := Search{}
+	err := ctx.Bind(&getall)
+	helper.PanicIfError(err)
+	baseURL := fmt.Sprintf("http://%s", os.Getenv("PRODUK_SERVICE_QUERY_HOST"))
+	url := baseURL + fmt.Sprintf("/produk/search?search=%s", getall.Words)
+	fmt.Println(url, "cek url")
+	res, err := http.Get(url)
+	fmt.Println(err, res, "nidzazazaza")
+
+	// var p entity.WebResponseListAndDetail
+	// fmt.Println(dec, res, res.Body, p, "nidzam")
+	dec := json.NewDecoder(res.Body)
+	var p Res
+	// fmt.Println(dec, res, res.Body, p, "nidzam")
+	err = dec.Decode(&p)
+
+	helper.WriteToResponseBody(ctx, p, res.StatusCode)
+}
 func (controller *ProdukControllerImpl) FindById(ctx echo.Context) {
 	// authHeader := ctx.Request().Header["Authorization"][0]
 	// auth := helper.ReadDataToken(authHeader)
