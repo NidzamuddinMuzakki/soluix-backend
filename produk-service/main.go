@@ -23,5 +23,5 @@ func main() {
 	defer db.Close()
 
 	r := app.InitRouter(UserController)
-	r.Start(":9002")
+	r.Start(":9000")
 }

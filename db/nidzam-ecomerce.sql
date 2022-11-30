@@ -29,9 +29,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `produks` (
   `id` int(11) NOT NULL,
-  `nama` varchar(255) NOT NULL,
-  `kategori` varchar(255) NOT NULL,
-  `stok` int(11) NOT NULL,
+  `product_id` varchar(20) NOT NULL,
+  `product_name` varchar(100) NOT NULL,
+  `sub_category` varchar(100) NOT NULL,
+  `brand` varchar(100) NOT NULL,
+  `price` bigint(11) NOT NULL,
+  `status` varchar(100) NOT NULL,
   `created_by` varchar(255) NOT NULL,
   `created_time` datetime NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
@@ -44,25 +47,13 @@ CREATE TABLE `produks` (
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` varchar(255) NOT NULL,
-  `created_by` varchar(255) NOT NULL,
-  `created_time` datetime NOT NULL,
-  `updated_by` varchar(255) NOT NULL,
-  `updated_time` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_by`, `created_time`, `updated_by`, `updated_time`) VALUES
-(1, 'admin', 'p@ssw0rd', 'admin', 'system', '2022-06-19 10:40:48', 'admin', '2022-06-20 02:10:24'),
-(5, 'nidzam', 'p@ssw0rd', 'user', 'nidzam', '2022-06-20 01:49:35', '', NULL),
-(6, 'budi', 'p@ssw0rd', 'user', 'budi', '2022-06-20 02:10:41', '', NULL);
+
 
 --
 -- Indexes for dumped tables
@@ -77,8 +68,6 @@ ALTER TABLE `produks`
 --
 -- Indexes for table `users`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -93,9 +82,7 @@ ALTER TABLE `produks`
 --
 -- AUTO_INCREMENT for table `users`
 --
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-COMMIT;
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

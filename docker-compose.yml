@@ -1,61 +1,24 @@
 version: '3.7'
 services:
-  api-gateway:
-        build: api-gateway
+  produk-service:
+        build: produk-service
         environment: 
-            USER_SERVICE_HOST: 'user-service:9001'
-            PRODUK_SERVICE_HOST: 'produk-service:9002'
-            PRODUK_SERVICE_QUERY_HOST: 'produk-service-query:9003'
+          MYSQL_HOST: 'mysql:3306'
+          MYSQL_DATABASE: 'nidzam-soluix'
+          MYSQL_USER: 'root'
+          MYSQL_PASSWORD: 'password'
         ports:        
           - "9000:9000"
+        expose:
+          - "9000"
         depends_on:
-          - user-service
-          - produk-service
-          - produk-service-query
+          - mysql
         restart: always
-  produk-service:
-      build: produk-service
-      environment: 
-          MYSQL_HOST: 'mysql:3306'
-          MYSQL_DATABASE: 'nidzam-ecomerce'
-          MYSQL_USER: 'root'
-          MYSQL_PASSWORD: 'password'
-          RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
-      ports:        
-        - "9002:9002"
-      depends_on:
-        - mysql
-        - rabbitmq
-      restart: always
-  produk-service-query:
-      build: produk-service-query
-      environment: 
-          RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
-          ELASTICSEARCH_URL: "elasticsearch:9200"
-      ports:        
-        - "9003:9003"
-      depends_on:
-        - rabbitmq
-        - produk-service
-        - elasticsearch
-      restart: always
-  user-service:
-      build: user-service
-      environment: 
-          MYSQL_HOST: 'mysql:3306'
-          MYSQL_DATABASE: 'nidzam-ecomerce'
-          MYSQL_USER: 'root'
-          MYSQL_PASSWORD: 'password'
-      ports:        
-        - "9001:9001"
-      depends_on:
-        - mysql
-      restart: always
   mysql:
     image: mysql:5.7
-    container_name: 'mysql_nidzam_ecomerce'
+    container_name: 'mysql_nidzam_soluix'
     environment:
-      MYSQL_DATABASE: 'nidzam-ecomerce'
+      MYSQL_DATABASE: 'nidzam-soluix'
       MYSQL_HOST: 'localhost:3306'
       MYSQL_USER: 'mysql'
       MYSQL_PASSWORD: 'password'
@@ -67,18 +30,5 @@ services:
     restart: always
     volumes:     
       - ./db/nidzam-ecomerce.sql:/docker-entrypoint-initdb.d/init.sql
-  rabbitmq:
-    image: rabbitmq:3.8.14-management-alpine
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-  elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:7.12.1"
-    environment:
-      discovery.type: "single-node"
-      cluster.name: "cluster-1"
-      node.name: "node-1"
-    ports:
-      - "9200:9200"
-    volumes:
-      - "./tmp/elasticsearch/data:/usr/share/elasticsearch/data"            
+  
+            

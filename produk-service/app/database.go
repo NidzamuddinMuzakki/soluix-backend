@@ -47,8 +47,8 @@ func Init() *sql.DB {
 	// 	panic(err)
 	// }
 
-	db.SetMaxIdleConns(10)
-	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(4)
+	db.SetMaxOpenConns(20)
 	// return db
 	return db
 }

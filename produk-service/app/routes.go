@@ -20,20 +20,13 @@ func InitRouter(ProdukController controller.UserController) *echo.Echo {
 			ProdukController.FindAll(c)
 			return nil
 		})
-		PRODUK.GET("/detail", func(c echo.Context) error {
-			ProdukController.FindById(c)
-			return nil
-		})
-		PRODUK.POST("/insert", func(c echo.Context) error {
-			ProdukController.Insert(c)
-			return nil
-		})
-		PRODUK.POST("/update", func(c echo.Context) error {
-			ProdukController.Update(c)
-			return nil
-		})
-		PRODUK.GET("/delete", func(c echo.Context) error {
-			ProdukController.Delete(c)
+		// PRODUK.GET("/detail", func(c echo.Context) error {
+		// 	ProdukController.FindById(c)
+		// 	return nil
+		// })
+
+		PRODUK.POST("/insert-awal", func(c echo.Context) error {
+			ProdukController.InsertAwal(c)
 			return nil
 		})
 

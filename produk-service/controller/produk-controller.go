@@ -1,8 +1,10 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
+	"math/rand"
+	"sync"
+	"time"
 
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service/entity"
 	"github.com/NidzamuddinMuzakki/nidzam-ecomerce/produk-service/helper"
@@ -14,11 +16,9 @@ import (
 )
 
 type UserController interface {
+	InsertAwal(ctx echo.Context)
 	FindAll(ctx echo.Context)
-	FindById(ctx echo.Context)
-	Insert(ctx echo.Context)
-	Update(ctx echo.Context)
-	Delete(ctx echo.Context)
+	// FindById(ctx echo.Context)
 }
 type LoginDTO struct {
 	Username string `json:"username"`
@@ -53,81 +53,89 @@ func (controller *UserControllerImpl) FindAll(ctx echo.Context) {
 
 	helper.PanicIfError(err)
 
-	resultData := controller.UserService.FindAll(ctx.Request().Context(), getall.Page, getall.Perpage, getall.Filter, getall.Order)
+	resultData, info := controller.UserService.FindAll(ctx.Request().Context(), getall.Page, getall.Perpage, getall.Filter, getall.Order)
 	fmt.Println(resultData)
-
-	webResponse := entity.WebResponseListAndDetail{
-		Code: 200,
-		Data: resultData,
-		Info: "",
+	status := "berhasil"
+	code := 200
+	if len(resultData) == 0 {
+		status = "not found"
+		code = 404
 	}
-
-	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
-}
-
-func (controller *UserControllerImpl) FindById(ctx echo.Context) {
-	// authHeader := ctx.Request().Header["Authorization"][0]
-	// auth := helper.ReadDataToken(authHeader)
-	// fmt.Println(auth)
-	getall := entity.ReqListById{}
-	err := ctx.Bind(&getall)
-	// fmt.Println(err, getall.Username)
-	helper.PanicIfError(err)
-
-	resultData := controller.UserService.FindById(ctx.Request().Context(), getall.Id)
-	// fmt.Println(beli)
 	webResponse := entity.WebResponseListAndDetail{
-		Code: 200,
-		Data: resultData,
-		Info: "",
-	}
-
-	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
-}
-func (controller *UserControllerImpl) Insert(ctx echo.Context) {
-
-	CreateRequest := entity.ProdukEntity{}
-
-	err := ctx.Bind(&CreateRequest)
-	fmt.Println(err)
-	helper.PanicIfError(err)
-	fmt.Println(CreateRequest, "nidzam")
-	resultData, dataFromInsert := controller.UserService.Insert(ctx.Request().Context(), CreateRequest)
-	webResponse := entity.WebResponse{
-		Code:   200,
-		Status: "OK",
+		Code:   code,
+		Status: status,
 		Data:   resultData,
+		Info:   info,
 	}
-	newFsConfigBytes, _ := json.Marshal(dataFromInsert)
-	go controller.Rc.Publish("insert-queue", newFsConfigBytes)
 
 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
 }
 
-func (controller *UserControllerImpl) Update(ctx echo.Context) {
+// func (controller *UserControllerImpl) FindById(ctx echo.Context) {
+// 	// authHeader := ctx.Request().Header["Authorization"][0]
+// 	// auth := helper.ReadDataToken(authHeader)
+// 	// fmt.Println(auth)
+// 	getall := entity.ReqListById{}
+// 	err := ctx.Bind(&getall)
+// 	// fmt.Println(err, getall.Username)
+// 	helper.PanicIfError(err)
 
-	CreateRequest := entity.ProdukEntity{}
+// 	resultData := controller.UserService.FindById(ctx.Request().Context(), getall.Id)
+// 	// fmt.Println(beli)
+// 	webResponse := entity.WebResponseListAndDetail{
+// 		Code: 200,
+// 		Data: resultData,
+// 		Info: "",
+// 	}
 
-	helper.ReadFromRequestBody(ctx, &CreateRequest)
-	fmt.Println(CreateRequest, "hayayaasdasas")
-	if CreateRequest.Role != "admin" {
-		webResponse := entity.WebResponse{
-			Code:   406,
-			Status: "false",
-			// Data:   resultData,
-			Data: "anda bukan admin",
-		}
-		helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
-		return
+// 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
+// }
+
+func RandomString(n int) string {
+	var letters = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+	s := make([]rune, n)
+	for i := range s {
+		s[i] = letters[rand.Intn(len(letters))]
 	}
-	resultData, dataFromUpdate := controller.UserService.Update(ctx.Request().Context(), CreateRequest)
-	newFsConfigBytes, _ := json.Marshal(dataFromUpdate)
-	go controller.Rc.Publish("update-queue", newFsConfigBytes)
+	return string(s)
+}
+func RandomInt(n int) string {
+	var letters = []rune("1234567890")
+
+	s := make([]rune, n)
+	for i := range s {
+		s[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(s)
+}
+func (controller *UserControllerImpl) InsertAwal(ctx echo.Context) {
+
+	var wg sync.WaitGroup
+	cuyNow := helper.TimePlus7(time.Now())
+	// resultData := controller.UserService.Insert(ctx.Request().Context(), CreateRequest)
+	for i := 1; i <= 200000; i++ {
+		wg.Add(1)
+		i := i
+		go func() {
+			defer wg.Done()
+			CreateRequest := entity.ProdukEntity{}
+			CreateRequest.ProductName = fmt.Sprintf("barang%d", i)
+			CreateRequest.ProductId = RandomString(3) + "-" + RandomInt(4) + "-" + RandomString(3)
+			CreateRequest.SubCategory = "barang baru"
+			CreateRequest.Brand = "clarity"
+			CreateRequest.Status = "active"
+			CreateRequest.CreatedBy = "admin"
+			CreateRequest.CreatedTime = cuyNow
+			CreateRequest.Price = rand.Intn(50000-10000) + 10000
+			controller.UserService.Insert(ctx.Request().Context(), CreateRequest)
+		}()
+	}
+	wg.Wait()
 	webResponse := entity.WebResponse{
 		Code:   200,
 		Status: "OK",
-		// Data:   resultData,
-		Data: resultData,
+		Data:   "",
 	}
 
 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
@@ -136,32 +144,4 @@ func (controller *UserControllerImpl) Update(ctx echo.Context) {
 type GETId struct {
 	RowId int    `query:"id"`
 	Role  string `query:"role"`
-}
-
-func (controller *UserControllerImpl) Delete(ctx echo.Context) {
-
-	getall := GETId{}
-	err := ctx.Bind(&getall)
-
-	helper.PanicIfError(err)
-	if getall.Role != "admin" {
-		webResponse := entity.WebResponse{
-			Code:   406,
-			Status: "false",
-			// Data:   resultData,
-			Data: "anda bukan admin",
-		}
-		helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
-		return
-	}
-	resultData := controller.UserService.Delete(ctx.Request().Context(), getall.RowId)
-	webResponse := entity.WebResponse{
-		Code:   200,
-		Status: "OK",
-		Data:   resultData,
-	}
-	newFsConfigBytes, _ := json.Marshal(getall)
-	go controller.Rc.Publish("delete-queue", newFsConfigBytes)
-
-	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
 }
