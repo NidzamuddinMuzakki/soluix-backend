@@ -23,10 +23,7 @@ services:
       MYSQL_USER: 'mysql'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
-    expose:
-      - "3306"
-    ports:
-      - "3306:3306"
+    
     restart: always
     volumes:     
       - ./db/nidzam-ecomerce.sql:/docker-entrypoint-initdb.d/init.sql
