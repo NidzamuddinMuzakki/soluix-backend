@@ -29,6 +29,10 @@ func InitRouter(ProdukController controller.UserController) *echo.Echo {
 			ProdukController.InsertAwal(c)
 			return nil
 		})
+		PRODUK.POST("/insert-awal-versi2", func(c echo.Context) error {
+			ProdukController.InsertAwal2(c)
+			return nil
+		})
 
 	}
 	return r

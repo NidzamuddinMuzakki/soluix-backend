@@ -1,4 +1,5 @@
 ![](schema.png)
-- run=docker compose up --build
+- untuk menjalan scriptnya : docker compose up --build
+- database init sudah langsung di buatkan
 
 

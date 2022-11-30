@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"sync"
 	"time"
@@ -17,6 +18,8 @@ import (
 
 type UserController interface {
 	InsertAwal(ctx echo.Context)
+	InsertAwal2(ctx echo.Context)
+
 	FindAll(ctx echo.Context)
 	// FindById(ctx echo.Context)
 }
@@ -112,7 +115,7 @@ func RandomInt(n int) string {
 func (controller *UserControllerImpl) InsertAwal(ctx echo.Context) {
 
 	var wg sync.WaitGroup
-	cuyNow := helper.TimePlus7(time.Now())
+	waktuNow := helper.TimePlus7(time.Now())
 	// resultData := controller.UserService.Insert(ctx.Request().Context(), CreateRequest)
 	for i := 1; i <= 200000; i++ {
 		wg.Add(1)
@@ -126,7 +129,7 @@ func (controller *UserControllerImpl) InsertAwal(ctx echo.Context) {
 			CreateRequest.Brand = "clarity"
 			CreateRequest.Status = "active"
 			CreateRequest.CreatedBy = "admin"
-			CreateRequest.CreatedTime = cuyNow
+			CreateRequest.CreatedTime = waktuNow
 			CreateRequest.Price = rand.Intn(50000-10000) + 10000
 			controller.UserService.Insert(ctx.Request().Context(), CreateRequest)
 		}()
@@ -135,7 +138,44 @@ func (controller *UserControllerImpl) InsertAwal(ctx echo.Context) {
 	webResponse := entity.WebResponse{
 		Code:   200,
 		Status: "OK",
-		Data:   "",
+		Data:   "berhasil",
+	}
+
+	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)
+}
+func (controller *UserControllerImpl) InsertAwal2(ctx echo.Context) {
+	var wg sync.WaitGroup
+	waktuNow := helper.TimePlus7(time.Now())
+	for l := 1; l <= 200; l++ {
+		query := ""
+		wg.Add(1)
+		l := l
+		go func() {
+			defer wg.Done()
+			for i := ((l-1)*1000 + 1); i <= l*1000; i++ {
+				CreateRequest := entity.ProdukEntity{}
+				CreateRequest.ProductName = fmt.Sprintf("barang%d", i)
+				CreateRequest.ProductId = RandomString(3) + "-" + RandomInt(4) + "-" + RandomString(3)
+				CreateRequest.SubCategory = "barang baru"
+				CreateRequest.Brand = "clarity"
+				CreateRequest.Status = "active"
+				CreateRequest.CreatedBy = "admin"
+				CreateRequest.CreatedTime = waktuNow
+				CreateRequest.Price = rand.Intn(50000-10000) + 10000
+				query += fmt.Sprintf("('%s','%s','%s','%s',%d,'%s','%s','%s','%s'),", CreateRequest.ProductId,
+					CreateRequest.ProductName, CreateRequest.SubCategory, CreateRequest.Brand, CreateRequest.Price, CreateRequest.Status, "admin", CreateRequest.CreatedTime, "")
+				log.Println(i)
+			}
+			controller.UserService.Insert2(ctx.Request().Context(), query[:len(query)-1])
+		}()
+
+	}
+	wg.Wait()
+
+	webResponse := entity.WebResponse{
+		Code:   200,
+		Status: "OK",
+		Data:   "berhasil",
 	}
 
 	helper.WriteToResponseBody(ctx, webResponse, webResponse.Code)

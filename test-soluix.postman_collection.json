@@ -12,7 +12,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:9000/produk?page=1&perpage=10",
+					"raw": "http://localhost:9000/produk?page=2&perpage=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -24,11 +24,11 @@
 					"query": [
 						{
 							"key": "page",
-							"value": "1"
+							"value": "2"
 						},
 						{
 							"key": "perpage",
-							"value": "10"
+							"value": "1"
 						}
 					]
 				}
@@ -38,7 +38,7 @@
 		{
 			"name": "Insert-200000",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"url": {
 					"raw": "http://localhost:9000/produk/insert-awal",
@@ -50,6 +50,26 @@
 					"path": [
 						"produk",
 						"insert-awal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert-200000 versi 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9000/produk/insert-awal-versi2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"produk",
+						"insert-awal-versi2"
 					]
 				}
 			},
