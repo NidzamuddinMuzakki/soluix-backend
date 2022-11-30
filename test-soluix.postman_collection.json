@@ -1,0 +1,59 @@
+{
+	"info": {
+		"_postman_id": "878c29e3-27b3-49c8-a134-96cc6b3018d1",
+		"name": "test-soluix",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8319006"
+	},
+	"item": [
+		{
+			"name": "GetDataPagination",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9000/produk?page=1&perpage=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"produk"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "perpage",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert-200000",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9000/produk/insert-awal",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"produk",
+						"insert-awal"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
